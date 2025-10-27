@@ -8,10 +8,10 @@
     "start": "node api/invoice.js"
   },
   "dependencies": {
-    "@sparticuz/chromium": "^115.0.0",
-    "axios": "^1.7.7",
-    "dayjs": "^1.11.13",
-    "form-data": "^4.0.0",
-    "puppeteer-core": "^22.15.0"
-  }
+  "@sparticuz/chromium": "105.0.0",
+  "puppeteer-core": "19.7.5",
+  "axios": "^1.7.7",
+  "form-data": "^4.0.0",
+  "dayjs": "^1.11.13"
+ }
 }
