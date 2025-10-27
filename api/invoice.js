@@ -143,13 +143,14 @@ async function htmlToPdfBuffer(html) {
     "--disable-setuid-sandbox",
     "--single-process",
     "--disable-extensions",
-    "--disable-dev-profile"
+    "--disable-webgl",
+    "--font-render-hinting=none"
   ],
   executablePath: await chromium.executablePath(),
-  headless: true
+  headless: true,
+  ignoreHTTPSErrors: true
 });
- // A4-ish viewport for crisp text
-  });
+
 
   try {
     const page = await browser.newPage();
@@ -229,4 +230,5 @@ export default async function handler(req, res) {
     return res.status(500).json({ success: false, error: err.message || String(err) });
   }
 }
+
 
