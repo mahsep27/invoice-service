@@ -15,6 +15,8 @@ import dayjs from "dayjs";
  *  - COMPANY_NAME
  *  - COMPANY_ADDRESS
  */
+chromium.setHeadlessMode = true;
+chromium.setGraphicsMode = false;
 
 const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN;
 const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID || "appONFSmSkZsRk7zk";
@@ -137,19 +139,19 @@ async function htmlToPdfBuffer(html) {
   const browser = await puppeteer.launch({
   args: [
     ...chromium.args,
-    "--disable-gpu",
-    "--disable-dev-shm-usage",
     "--no-sandbox",
     "--disable-setuid-sandbox",
+    "--disable-dev-shm-usage",
+    "--disable-gpu",
     "--single-process",
     "--disable-extensions",
-    "--disable-webgl",
-    "--font-render-hinting=none"
+    "--disable-webgl"
   ],
+  defaultViewport: chromium.defaultViewport,
   executablePath: await chromium.executablePath(),
-  headless: true,
-  ignoreHTTPSErrors: true
+  headless: chromium.headless
 });
+
 
 
   try {
@@ -230,5 +232,6 @@ export default async function handler(req, res) {
     return res.status(500).json({ success: false, error: err.message || String(err) });
   }
 }
+
 
 
