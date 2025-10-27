@@ -1,5 +1,4 @@
-import chromium from "@sparticuz/chromium";
-import puppeteer from "puppeteer-core";
+import { chromium } from "@playwright/test";
 import axios from "axios";
 import FormData from "form-data";
 import dayjs from "dayjs";
@@ -15,8 +14,6 @@ import dayjs from "dayjs";
  *  - COMPANY_NAME
  *  - COMPANY_ADDRESS
  */
-chromium.setHeadlessMode = true;
-chromium.setGraphicsMode = false;
 
 const AIRTABLE_TOKEN = process.env.AIRTABLE_TOKEN;
 const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID || "appONFSmSkZsRk7zk";
@@ -131,26 +128,27 @@ function renderInvoiceHTML({ email, payment, date, invoiceNo }) {
 </html>`;
 }
 
+
 /**
- * Create PDF buffer from HTML using puppeteer-core + @sparticuz/chromium
+ * Create PDF buffer using Playwright
  */
 async function htmlToPdfBuffer(html) {
-  const executablePath = await chromium.executablePath();
-  const browser = await puppeteer.launch({
-  args: [
-    ...chromium.args,
-    "--no-sandbox",
-    "--disable-setuid-sandbox",
-    "--disable-dev-shm-usage",
-    "--disable-gpu",
-    "--single-process",
-    "--disable-extensions",
-    "--disable-webgl"
-  ],
-  defaultViewport: chromium.defaultViewport,
-  executablePath: await chromium.executablePath(),
-  headless: chromium.headless
-});
+  const browser = await chromium.launch({
+    args: ["--font-render-hinting=none"],
+    headless: true
+  });
+
+  const page = await browser.newPage();
+  await page.setContent(html, { waitUntil: "networkidle" });
+  const pdf = await page.pdf({
+    format: "A4",
+    printBackground: true
+  });
+
+  await browser.close();
+  return pdf;
+}
+
 
 
 
@@ -232,6 +230,7 @@ export default async function handler(req, res) {
     return res.status(500).json({ success: false, error: err.message || String(err) });
   }
 }
+
 
 
 
