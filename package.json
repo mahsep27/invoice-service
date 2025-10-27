@@ -1,0 +1,17 @@
+{
+  "name": "invoice-service",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "vercel dev",
+    "start": "node api/invoice.js"
+  },
+  "dependencies": {
+    "@sparticuz/chromium": "^128.0.0",
+    "axios": "^1.7.7",
+    "dayjs": "^1.11.13",
+    "form-data": "^4.0.0",
+    "puppeteer-core": "^22.15.0"
+  }
+}
