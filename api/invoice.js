@@ -135,10 +135,20 @@ function renderInvoiceHTML({ email, payment, date, invoiceNo }) {
 async function htmlToPdfBuffer(html) {
   const executablePath = await chromium.executablePath();
   const browser = await puppeteer.launch({
-    args: chromium.args,
-    executablePath,
-    headless: chromium.headless,
-    defaultViewport: { width: 1240, height: 1754 } // A4-ish viewport for crisp text
+  args: [
+    ...chromium.args,
+    "--disable-gpu",
+    "--disable-dev-shm-usage",
+    "--no-sandbox",
+    "--disable-setuid-sandbox",
+    "--single-process",
+    "--disable-extensions",
+    "--disable-dev-profile"
+  ],
+  executablePath: await chromium.executablePath(),
+  headless: true
+});
+ // A4-ish viewport for crisp text
   });
 
   try {
@@ -219,3 +229,4 @@ export default async function handler(req, res) {
     return res.status(500).json({ success: false, error: err.message || String(err) });
   }
 }
+
